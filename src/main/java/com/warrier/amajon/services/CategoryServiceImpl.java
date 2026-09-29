@@ -1,6 +1,8 @@
 package com.warrier.amajon.services;
 
 
+import com.warrier.amajon.exceptions.MyApiException;
+import com.warrier.amajon.exceptions.ResourceNotFoundException;
 import com.warrier.amajon.models.Category;
 import com.warrier.amajon.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,36 +21,38 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> GetAllCategories() {
-        return categoryRepository.findAll();
+        List<Category> categoryList = categoryRepository.findAll();
+        if(categoryList.isEmpty()){
+            throw new MyApiException("No categories found!");
+        }
+        return categoryList;
     }
 
     @Override
     public void CreateCategory(Category category) {
+        Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
+        if(savedCategory != null) {
+            throw new MyApiException("Category already exists with name " +  category.getCategoryName());
+        }
         categoryRepository.save(category);
 
     }
 
     @Override
-    public ResponseEntity<String> DeleteCategoryByCategoryId(Integer categoryId) {
-        Optional<Category> category = categoryRepository.findById(categoryId);
-        if (category.isEmpty()) {
-            return new ResponseEntity<>("Category Not Found", HttpStatus.NOT_FOUND);
-        } else {
-            categoryRepository.delete(category.get());
-            return new ResponseEntity<>("Category Deleted Successfully", HttpStatus.OK);
-        }
+    public String DeleteCategoryByCategoryId(Integer categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category" , "categoryId" , categoryId));
+            categoryRepository.delete(category);
+            return "Category Deleted Successfully";
+
     }
 
     @Override
-    public ResponseEntity<String> updateCategory(Integer categoryId, Category category) {
-        Optional<Category> originalCategory = categoryRepository.findById(categoryId);
-        if (originalCategory.isEmpty()) {
-            return new ResponseEntity<>("Category Not Found", HttpStatus.NOT_FOUND);
-        } else {
+    public String updateCategory(Integer categoryId, Category category) {
+            Category originalCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category" , "categoryId" , categoryId));
             //update the category fields
-            originalCategory.get().setCategoryName(category.getCategoryName());
-            categoryRepository.save(originalCategory.get());
-            return new ResponseEntity<>("Category Updated Successfully", HttpStatus.OK);
-        }
+            originalCategory.setCategoryName(category.getCategoryName());
+            categoryRepository.save(originalCategory);
+            return "Category Updated Successfully";
+
     }
 }

@@ -2,8 +2,7 @@ package com.warrier.amajon.controllers;
 
 import com.warrier.amajon.models.Category;
 import com.warrier.amajon.services.CategoryService;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @RestController
 public class CategoryController {
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
@@ -25,20 +24,21 @@ public class CategoryController {
     }
 
     @PostMapping("/api/private/categories")
-    public ResponseEntity<String> CreateCategory(@RequestBody Category category) {
+    public ResponseEntity<String> CreateCategory(@Valid @RequestBody Category category) {
         categoryService.CreateCategory(category);
         return new ResponseEntity<>("Category Created", HttpStatus.CREATED);
     }
 
     @DeleteMapping("/api/private/categories/{categoryId}")
     public ResponseEntity<String> DeleteCategory(@PathVariable Integer categoryId) {
-
-        return categoryService.DeleteCategoryByCategoryId(categoryId);
+        String status = categoryService.DeleteCategoryByCategoryId(categoryId);
+        return new ResponseEntity<>( status, HttpStatus.OK );
     }
 
 
     @PutMapping("/api/private/categories/{categoryId}")
     public ResponseEntity<String> UpdateCategory(@PathVariable Integer categoryId, @RequestBody Category category) {
-        return categoryService.updateCategory(categoryId , category);
+        String status = categoryService.updateCategory(categoryId , category);
+        return new ResponseEntity<>(status, HttpStatus.OK) ;
     }
 }

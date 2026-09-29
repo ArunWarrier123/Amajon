@@ -11,7 +11,7 @@ import java.util.List;
 public interface CategoryService {
     List<Category> GetAllCategories();
     void CreateCategory(Category category);
-    ResponseEntity<String> DeleteCategoryByCategoryId(Integer categoryId);
+    String DeleteCategoryByCategoryId(Integer categoryId);
 
-    ResponseEntity<String> updateCategory(Integer categoryId, Category category);
+    String updateCategory(Integer categoryId, Category category);
 }
