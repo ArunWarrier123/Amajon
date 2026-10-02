@@ -1,13 +1,13 @@
 package com.warrier.amajon.exceptions;
 
 
+import com.warrier.amajon.payload.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,14 +27,18 @@ public class CustomExceptionsHandler {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> resourceNotFoundHandler(ResourceNotFoundException e) {
-
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+    public ResponseEntity<APIResponse> resourceNotFoundHandler(ResourceNotFoundException e) {
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(e.getMessage());
+        apiResponse.setSuccess(false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @ExceptionHandler(MyApiException.class)
-    public ResponseEntity<String> myApiExceptionsHandler(MyApiException e) {
-
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+    public ResponseEntity<APIResponse> myApiExceptionsHandler(MyApiException e) {
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setMessage(e.getMessage());
+        apiResponse.setSuccess(false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 }
