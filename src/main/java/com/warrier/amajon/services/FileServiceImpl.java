@@ -17,7 +17,7 @@ public class FileServiceImpl implements FileService{
     public String uploadImageToServer(MultipartFile image, String path) throws IOException {
         System.out.println("Uploading image to server" + path);
         String originalFilename = image.getOriginalFilename();
-        String newFileName = UUID.randomUUID().toString() + "." + originalFilename.substring(originalFilename.lastIndexOf("."));
+        String newFileName = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
 
         //upload this file to the path
         String filePath = path + File.pathSeparator +newFileName;

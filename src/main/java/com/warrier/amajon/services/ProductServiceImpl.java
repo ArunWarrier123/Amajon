@@ -51,7 +51,6 @@ public class ProductServiceImpl implements ProductService {
             throw new MyApiException("Product already exists!");
         }
         Product existingProduct = modelMapper.map(product, Product.class);
-        System.out.println("ASDFASD");
         existingProduct.setProductCategory(category);
         existingProduct.setSpecialPrice(
                 existingProduct.getProductPrice() - (existingProduct.getDiscount() * 0.01 * existingProduct.getProductPrice())
